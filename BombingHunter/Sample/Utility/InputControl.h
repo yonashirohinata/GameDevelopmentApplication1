@@ -17,5 +17,4 @@ public:
 
 private:
 	static bool CheckKeyCodeRange(int key_code);
-
 };
