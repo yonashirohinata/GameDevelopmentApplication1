@@ -152,6 +152,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Objects\Enemy\Blinky.h" />
     <ClInclude Include="Objects\Food\PowerFood.h" />
     <ClInclude Include="Objects\GameObject.h" />
     <ClInclude Include="Objects\Enemy\EnemyBase.h" />
