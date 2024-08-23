@@ -69,7 +69,7 @@ void EnemyBase::Update(float delta_second)
 			//アニメーション制御
 			AnimationControl(delta_second);
 			break;
-		case DIE:
+		case eDIE:
 			//死亡時の移動処理
 			Die(delta_second);
 			//アニメーション制御
@@ -100,4 +100,69 @@ void EnemyBase::Finalize()
 void EnemyBase::OnHitCollision(GameObjectBase* hit_object)
 {
 	//当たったオブジェクトが壁だったら
+	if (hit_object->GetCollision().object_type == eObjectType::wall)
+	{
+		//当たり判定情報お取得して、カプセルがある位置を求める
+		CapsuleCollision hc = hit_object->GetCollision();
+		hc.point[0] += hit_object->GetLocation();
+		hc.point[1] += hit_object->GetLocation();
+
+		//最近傍点を求める
+		Vector2D near_point = NearPointCheck(hc, this->location);
+
+		//Enemyからnear_pointへの方向ベクトルを取得
+		Vector2D dv2 = near_point = this->location;
+		Vector2D dv = this->location - near_point;
+
+		//めり込んだ差分
+		float diff = (this->GetCollision().radius + hc.radius) - dv.Length();
+
+		//diffの分だけ戻る
+		location += dv.Normalize() * diff;
+	}
+
+	//プレイヤーがパワーアップ状態かつ、当たったオブジェクトがプレイヤーだったら
+	if (/*プレイヤーがパワーアップした時かつ*/hit_object->GetCollision().object_type == eObjectType::player)
+	{
+		enemy_state = eEnemyState::eDIE;
+	}
+}
+
+/// <summry>
+/// エネミーの状態を取得する
+/// </summry>
+/// <returns>エネミーの状態</returns>
+eEnemyState EnemyBase::GetEnemyState() const
+{
+	return enemy_state;
+}
+
+void EnemyBase::Movement(float delta_second)
+{
+	
+}
+
+/// <summry>
+/// アニメーション制御
+/// </summry>
+/// <param name="delta_second">1フレームあたりの時間</param>
+void EnemyBase::AnimationControl(float delta_second)
+{
+	//移動中のアニメーション
+	animation_time += delta_second;
+	if (animation_time >= (1.0f / 16.0f))
+	{
+		animation_time = 0.0f;
+		animation_count++;
+		if (animation_count >= 4)
+		{
+			animation_count = 0;
+		}
+		//画像の設定
+		int dir_num = (int)now_direction_state;
+		if (0 <= dir_num && dir_num < 4)
+		{
+			image = move_animation[(dir_num * 3) + animation_num[animation_count]];
+		}
+	}
 }

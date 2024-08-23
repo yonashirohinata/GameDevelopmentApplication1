@@ -10,7 +10,7 @@ enum eEnemyState
 	TERRITORY,		//縄張り状態
 	CHASE,			//追跡状態
 	IZIKE,			//イジケ状態
-	DIE,			//死亡状態
+	eDIE,			//死亡状態
 };
 
 /// <summary>
@@ -38,6 +38,8 @@ private:
 	float change_time;
 	float change_count;
 
+	const int animation_num[4] = { 0,1,2,1, };
+
 public:
 	EnemyBase();
 	virtual ~EnemyBase();
@@ -52,12 +54,19 @@ public:
 	/// <param name="hit_object">当たったゲームオブジェクトのポインタ</param>
 	virtual void OnHitCollision(GameObjectBase* hit_object) override;
 
+	/// <summary>
+	/// エネミーの状態を取得する
+	/// </summary>
+	/// <returns>エネミーの状態</returns>
+	eEnemyState GetEnemyState() const;
+
 private:
 	/// <summary>
 	/// 移動処理
 	/// </summary>
 	/// <param name="delta_second">1フレームあたりの時間</param>
 	void Movement(float delta_second);
+
 	/// <summary>
 	/// アニメーション制御
 	/// </summary>
